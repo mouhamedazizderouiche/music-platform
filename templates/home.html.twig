@@ -1,0 +1,423 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}GalaxyTunes - Accueil{% endblock %}
+
+{% block body %}
+<div class="galaxy-bg"></div>
+
+<!-- Sidebar Navigation -->
+<div class="sidebar">
+    <div class="sidebar-brand">
+        <h1 class="app-title">GalaxyTunes</h1>
+    </div>
+    <nav class="sidebar-nav">
+        <ul>
+            <li><a href="{{ path('app_home') }}" class="nav-link active"><i class="fas fa-home"></i> Accueil</a></li>
+            <li><a href="#" class="nav-link"><i class="fas fa-search"></i> Recherche</a></li>
+            <li><a href="#" class="nav-link"><i class="fas fa-book"></i> Bibliothèque</a></li>
+        </ul>
+    </nav>
+</div>
+
+<!-- Main Content -->
+<main class="main-content">
+    <!-- Made For Section -->
+    <section class="made-for">
+        <h2 class="section-title">Fait pour {{ app.user ? app.user.username : 'Vous' }}</h2>
+        <div class="carousel">
+            {% for playlist in personalized_playlists %}
+                <div class="playlist-card">
+                    <img src="{{ playlist.image }}" alt="{{ playlist.title }}" class="playlist-image">
+                    <div class="playlist-info">
+                        <h3 class="playlist-title">{{ playlist.title }}</h3>
+                        <p class="playlist-description">{{ playlist.description }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Episodes for You Section -->
+    <section class="episodes">
+        <h2 class="section-title">Épisodes pour vous</h2>
+        <div class="carousel">
+            {% for episode in recommended_episodes %}
+                <div class="episode-card">
+                    <img src="{{ episode.image }}" alt="{{ episode.title }}" class="episode-image">
+                    <div class="episode-info">
+                        <h3 class="episode-title">{{ episode.title }}</h3>
+                        <p class="episode-description">{{ episode.description }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Your Library Section -->
+    <section class="library">
+        <h2 class="section-title">Votre Bibliothèque</h2>
+        <ul class="library-list">
+            {% for saved_playlist in user_playlists %}
+                <li class="library-item">
+                    <img src="{{ saved_playlist.image }}" alt="{{ saved_playlist.title }}" class="library-image">
+                    <span class="library-title">{{ saved_playlist.title }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+    </section>
+</main>
+
+<!-- Player Bar -->
+<div class="player-bar">
+    <div class="player-content">
+        <img src="https://via.placeholder.com/50x50" alt="Current Track" class="player-image">
+        <div class="player-info">
+            <span class="player-title">Only A Dream</span>
+            <span class="player-artist">Beatsle, Kimberly Hale</span>
+        </div>
+        <div class="player-controls">
+            <button class="player-btn"><i class="fas fa-step-backward"></i></button>
+            <button class="player-btn play-btn"><i class="fas fa-play"></i></button>
+            <button class="player-btn"><i class="fas fa-step-forward"></i></button>
+        </div>
+        <div class="player-progress">
+            <span class="progress-time">0:58</span>
+            <div class="progress-bar"></div>
+            <span class="progress-time">3:00</span>
+        </div>
+    </div>
+</div>
+
+<!-- Decorative Stars -->
+<div class="star"></div>
+<div class="star"></div>
+<div class="star"></div>
+<div class="star"></div>
+
+<script>
+    // Mobile sidebar toggle
+    document.addEventListener('DOMContentLoaded', () => {
+        const sidebar = document.querySelector('.sidebar');
+        const toggleButton = document.createElement('button');
+        toggleButton.className = 'sidebar-toggle';
+        toggleButton.innerHTML = '<i class="fas fa-bars"></i>';
+        document.body.appendChild(toggleButton);
+
+        toggleButton.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+    });
+</script>
+{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Inter', sans-serif;
+    }
+
+    body {
+        background: #121212;
+        color: #fff;
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    .galaxy-bg {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, rgba(233, 69, 96, 0.05) 0%, transparent 70%);
+        opacity: 0.3;
+        z-index: -1;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 240px;
+        height: 100%;
+        background: #000;
+        padding: 1.5rem;
+        z-index: 100;
+        transition: transform 0.3s ease;
+    }
+
+    .sidebar-brand .app-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 2rem;
+        text-shadow: 0 0 5px rgba(233, 69, 96, 0.3);
+    }
+
+    .sidebar-nav ul {
+        list-style: none;
+    }
+
+    .sidebar-nav .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        color: #b3b3b3;
+        text-decoration: none;
+        font-size: 1rem;
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+
+    .sidebar-nav .nav-link:hover,
+    .sidebar-nav .nav-link.active {
+        color: #fff;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+    }
+
+    .sidebar-nav .nav-link i {
+        font-size: 1.2rem;
+    }
+
+    /* Main Content */
+    .main-content {
+        margin-left: 240px;
+        padding: 2rem;
+    }
+
+    /* Made For and Episodes Sections */
+    .made-for, .episodes {
+        margin-bottom: 2rem;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 1rem;
+    }
+
+    .carousel {
+        display: flex;
+        overflow-x: auto;
+        gap: 1.5rem;
+        padding-bottom: 1rem;
+        scrollbar-width: thin;
+        scrollbar-color: #e94560 #2a2a2a;
+    }
+
+    .carousel::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .carousel::-webkit-scrollbar-track {
+        background: #2a2a2a;
+    }
+
+    .carousel::-webkit-scrollbar-thumb {
+        background: #e94560;
+        border-radius: 4px;
+    }
+
+    .playlist-card, .episode-card {
+        flex: 0 0 200px;
+        background: #181818;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+    }
+
+    .playlist-card:hover, .episode-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .playlist-image, .episode-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .playlist-info, .episode-info {
+        padding: 0.75rem;
+    }
+
+    .playlist-title, .episode-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #fff;
+    }
+
+    .playlist-description, .episode-description {
+        font-size: 0.9rem;
+        color: #b3b3b3;
+    }
+
+    /* Library Section */
+    .library-list {
+        list-style: none;
+    }
+
+    .library-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #2a2a2a;
+    }
+
+    .library-image {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 4px;
+    }
+
+    .library-title {
+        font-size: 1rem;
+        color: #fff;
+    }
+
+    /* Player Bar */
+    .player-bar {
+        position: fixed;
+        bottom: 0;
+        left: 240px;
+        right: 0;
+        background: #282828;
+        padding: 0.5rem 1rem;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .player-content {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-grow: 1;
+    }
+
+    .player-image {
+        width: 50px;
+        height: 50px;
+        border-radius: 4px;
+    }
+
+    .player-info {
+        flex-grow: 1;
+    }
+
+    .player-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #fff;
+    }
+
+    .player-artist {
+        font-size: 0.9rem;
+        color: #b3b3b3;
+    }
+
+    .player-controls {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .player-btn {
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+    .player-btn:hover {
+        color: #1DB954;
+    }
+
+    .play-btn {
+        font-size: 1.5rem;
+    }
+
+    .player-progress {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+        color: #b3b3b3;
+    }
+
+    .progress-bar {
+        flex-grow: 1;
+        height: 4px;
+        background: #404040;
+        border-radius: 2px;
+    }
+
+    /* Stars */
+    .star {
+        position: absolute;
+        width: 2px;
+        height: 2px;
+        background: #fff;
+        border-radius: 50%;
+        box-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+        animation: twinkle 3s infinite;
+    }
+
+    .star:nth-child(2) { top: 10%; left: 15%; animation-delay: 0.5s; }
+    .star:nth-child(3) { top: 80%; left: 85%; animation-delay: 1s; }
+    .star:nth-child(4) { top: 25%; left: 75%; animation-delay: 1.5s; }
+
+    @keyframes twinkle {
+        0%, 100% { opacity: 0.3; transform: scale(1); }
+        50% { opacity: 0.8; transform: scale(1.2); }
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .sidebar {
+            transform: translateX(-100%);
+            width: 200px;
+        }
+
+        .sidebar.active {
+            transform: translateX(0);
+        }
+
+        .main-content {
+            margin-left: 0;
+            padding: 1.5rem;
+        }
+
+        .player-bar {
+            left: 0;
+        }
+
+        .sidebar-toggle {
+            display: block;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            background: #1DB954;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            color: #fff;
+            cursor: pointer;
+            z-index: 200;
+        }
+
+        .sidebar-toggle i {
+            font-size: 1.2rem;
+        }
+    }
+</style>
+{% endblock %}

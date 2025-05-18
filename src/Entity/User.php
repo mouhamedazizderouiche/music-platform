@@ -30,6 +30,9 @@ class User
     private ?string $motdepasse = null;
 
     #[ORM\Column(length: 255)]
+    private ?string $NumTelephone = null;
+
+    #[ORM\Column(length: 255)]
     private ?string $Confmotdepasse = null;
 
     #[ORM\Column(length: 255)]
@@ -48,7 +51,6 @@ class User
     public function setNom(string $Nom): static
     {
         $this->Nom = $Nom;
-
         return $this;
     }
 
@@ -60,7 +62,6 @@ class User
     public function setPrenom(string $Prenom): static
     {
         $this->Prenom = $Prenom;
-
         return $this;
     }
 
@@ -72,7 +73,17 @@ class User
     public function setPseudo(string $pseudo): static
     {
         $this->pseudo = $pseudo;
+        return $this;
+    }
 
+    public function getNumTelephone(): ?string
+    {
+        return $this->NumTelephone;
+    }
+
+    public function setNumTelephone(string $NumTelephone): static
+    {
+        $this->NumTelephone = $NumTelephone;
         return $this;
     }
 
@@ -84,7 +95,6 @@ class User
     public function setEmail(string $Email): static
     {
         $this->Email = $Email;
-
         return $this;
     }
 
@@ -96,7 +106,6 @@ class User
     public function setMotdepasse(string $motdepasse): static
     {
         $this->motdepasse = $motdepasse;
-
         return $this;
     }
 
@@ -108,7 +117,6 @@ class User
     public function setConfmotdepasse(string $Confmotdepasse): static
     {
         $this->Confmotdepasse = $Confmotdepasse;
-
         return $this;
     }
 
@@ -120,7 +128,6 @@ class User
     public function setPays(string $Pays): static
     {
         $this->Pays = $Pays;
-
         return $this;
     }
 }
